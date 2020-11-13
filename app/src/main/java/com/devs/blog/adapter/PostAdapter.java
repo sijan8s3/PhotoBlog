@@ -98,6 +98,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         isLiked(post.getPostID(), holder.likesImg);
         likesCount(post.getPostID(),holder.likesNumber);
         cmntCount(post.getPostID(), holder.commentsNumber);
+        isSaved(post.getPostID(), holder.saveImg);
 
         //on clicking like image icon
         holder.likesImg.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +108,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     FirebaseDatabase.getInstance().getReference().child("Likes").child(post.getPostID()).child(user.getUid()).setValue(true);
                 }else {
                     FirebaseDatabase.getInstance().getReference().child("Likes").child(post.getPostID()).child(user.getUid()).removeValue();
+                }
+            }
+        });
+
+        //on clicking save icon
+        holder.saveImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (holder.saveImg.getTag().equals("save")){
+                    FirebaseDatabase.getInstance().getReference().child("Saved")
+                            .child(user.getUid()).child(post.getPostID()).setValue(true);
+                }else {
+                    FirebaseDatabase.getInstance().getReference().child("Saved")
+                            .child(user.getUid()).child(post.getPostID()).removeValue();
                 }
             }
         });
@@ -191,6 +206,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     textView.setVisibility(View.GONE);
                 }else {
                     textView.setText("View all " + snapshot.getChildrenCount() + " comments");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    //checks if the post is already saved or not
+    private void isSaved(String postID, final ImageView saveIcon){
+        FirebaseDatabase.getInstance().getReference().child("Saved").child(postID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //if Uid exists inside Likes -> PostID
+                if (snapshot.child(user.getUid()).exists()){
+                    saveIcon.setImageResource(R.drawable.ic_saved);
+                    saveIcon.setTag("saved");
+                } else {
+                    saveIcon.setImageResource(R.drawable.ic_save);
+                    saveIcon.setTag("save");
+
                 }
             }
 

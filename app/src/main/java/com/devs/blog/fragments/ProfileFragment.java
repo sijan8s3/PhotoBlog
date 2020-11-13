@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.devs.blog.R;
 import com.devs.blog.adapter.PhotoAdapter;
+import com.devs.blog.adapter.PostAdapter;
 import com.devs.blog.model.Post;
 import com.devs.blog.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,8 +37,11 @@ import java.util.List;
 public class ProfileFragment extends Fragment{
 
     private RecyclerView recyclerPhoto;
+    private RecyclerView recyclerSaved;
     private List<Post> photoList;
     private PhotoAdapter photoAdapter;
+    private PhotoAdapter photoAdapterSaved;
+    private List<Post> savedList;
 
     private ImageView profileImage, options;
     private TextView posts, followers, followings, fullName, bio, username;
@@ -70,6 +75,13 @@ public class ProfileFragment extends Fragment{
         photoAdapter= new PhotoAdapter(getContext(), photoList);
         recyclerPhoto.setAdapter(photoAdapter);
 
+        recyclerSaved= view.findViewById(R.id.recycler_saved);
+        recyclerSaved.setHasFixedSize(true);
+        recyclerSaved.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        savedList= new ArrayList<>();
+        photoAdapterSaved= new PhotoAdapter(getContext(), savedList);
+        recyclerSaved.setAdapter(photoAdapterSaved);
+
         String data= getContext().getSharedPreferences("PROFILE", Context.MODE_PRIVATE).getString("profileID", "none");
         if (data.equals("none")){
             profileID= firebaseUser.getUid();
@@ -81,12 +93,18 @@ public class ProfileFragment extends Fragment{
         userInfo();
         getFollowingsFollowersCount();
         getPostCount();
-        getPhotos();
 
         if (profileID.equals(firebaseUser.getUid())){
+            //if viewing own profile -> show edit, photos and also saved!
             edit_profile.setText("Edit Profile");
+            getPhotos();
+            getSaved();
         }else {
+            //if viewing others profile -> show following status and photos only!
             checkFollowingStatus();
+            saved.setVisibility(View.GONE);
+            getPhotos();
+
         }
 
         edit_profile.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +143,68 @@ public class ProfileFragment extends Fragment{
 
 
 
+        saved.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerPhoto.setVisibility(View.GONE);
+                recyclerSaved.setVisibility(View.VISIBLE);
+            }
+        });
+        myPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerPhoto.setVisibility(View.VISIBLE);
+                recyclerSaved.setVisibility(View.GONE);
+            }
+        });
+
+
+
+
+
         return view;
+    }
+
+    private void getSaved() {
+
+        final List<String> savedIDs= new ArrayList<>();
+
+        FirebaseDatabase.getInstance().getReference().child("Saved").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    savedIDs.add(dataSnapshot.getKey());
+                }
+
+                FirebaseDatabase.getInstance().getReference().child("Posts").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        savedList.clear();
+
+                        for (DataSnapshot snapshot1: snapshot.getChildren()){
+                            Post post= snapshot1.getValue(Post.class);
+
+                            for (String ID : savedIDs){
+                                if (post.getPostID().equals(ID)){
+                                    savedList.add(post);
+                                }
+                            }
+                        }
+                        photoAdapterSaved.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void getPhotos() {
