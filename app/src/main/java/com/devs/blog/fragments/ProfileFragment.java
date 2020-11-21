@@ -1,5 +1,6 @@
 package com.devs.blog.fragments;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.devs.blog.EditProfileActivity;
 import com.devs.blog.R;
 import com.devs.blog.adapter.PhotoAdapter;
 import com.devs.blog.adapter.PostAdapter;
@@ -114,6 +116,7 @@ public class ProfileFragment extends Fragment{
 
                 if (btnText.equals("Edit Profile")){
                     //GOTO EDIT Activity
+                    startActivity(new Intent(getContext(), EditProfileActivity.class));
                 } else {
                     if (btnText.equals("Follow")){
                         //follow the user

@@ -11,11 +11,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.devs.blog.CommentActivity;
 import com.devs.blog.R;
+import com.devs.blog.fragments.PostDetailFragment;
+import com.devs.blog.fragments.ProfileFragment;
 import com.devs.blog.model.Post;
 import com.devs.blog.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -92,6 +95,50 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                 intent.putExtra("postID", post.getPostID());
                 intent.putExtra("creatorID", post.getCreator());
                 context.startActivity(intent);
+            }
+        });
+
+        holder.profileImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.getSharedPreferences("PROFILE", Context.MODE_PRIVATE).edit()
+                        .putString("profileID", post.getCreator()).apply();
+
+                ((FragmentActivity)context).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new ProfileFragment()).commit();
+
+            }
+        });
+        holder.username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.getSharedPreferences("PROFILE", Context.MODE_PRIVATE).edit()
+                        .putString("profileID", post.getCreator()).apply();
+
+                ((FragmentActivity)context).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new ProfileFragment()).commit();
+
+            }
+        });
+        holder.creator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.getSharedPreferences("PROFILE", Context.MODE_PRIVATE).edit()
+                        .putString("profileID", post.getCreator()).apply();
+
+                ((FragmentActivity)context).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new ProfileFragment()).commit();
+
+            }
+        });
+
+        holder.postImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.getSharedPreferences("POSTPREF",Context.MODE_PRIVATE).edit().putString("postID", post.getPostID()).apply();
+
+                ((FragmentActivity)context).getSupportFragmentManager()
+                        .beginTransaction().replace(R.id.fragment_container, new PostDetailFragment()).commit();
             }
         });
 
