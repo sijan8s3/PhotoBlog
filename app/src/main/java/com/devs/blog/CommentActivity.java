@@ -95,12 +95,24 @@ public class CommentActivity extends AppCompatActivity {
                     Toast.makeText(CommentActivity.this, "No comment added", Toast.LENGTH_SHORT).show();
                 }else {
                     insertComment();
+                    //  TODO addNotification(firebaseUser,postID);
                 }
             }
         });
 
         getComment();
     }
+
+//    private void addNotification(String uid, String postID) {
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//
+//        hashMap.put("userID", uid);
+//        hashMap.put("text", "started following you.");
+//        hashMap.put("postID", postID);
+//        hashMap.put("isPost", false);
+//
+//        FirebaseDatabase.getInstance().getReference().child("Notification").child(firebaseUser.getUid()).push().setValue(hashMap);
+//    }
 
     private void getComment() {
         FirebaseDatabase.getInstance().getReference().child("Comments").child(postID).addValueEventListener(new ValueEventListener() {
