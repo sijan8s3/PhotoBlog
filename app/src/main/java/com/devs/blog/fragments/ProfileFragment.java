@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.devs.blog.EditProfileActivity;
+import com.devs.blog.OptionsActivity;
 import com.devs.blog.R;
 import com.devs.blog.adapter.PhotoAdapter;
 import com.devs.blog.adapter.PostAdapter;
@@ -158,6 +159,14 @@ public class ProfileFragment extends Fragment{
             public void onClick(View view) {
                 recyclerPhoto.setVisibility(View.VISIBLE);
                 recyclerSaved.setVisibility(View.GONE);
+            }
+        });
+
+        options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), OptionsActivity.class));
+
             }
         });
 
