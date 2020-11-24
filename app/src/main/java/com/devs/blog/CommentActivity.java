@@ -137,7 +137,7 @@ public class CommentActivity extends AppCompatActivity {
         HashMap<String, Object> map= new HashMap<>();
 
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference().child("Comments").child(postID);
-        String commentID= reference.getKey();
+        String commentID= reference.push().getKey();
 
         map.put("comment", comment.getText().toString());
         map.put("authorID", firebaseUser.getUid());

@@ -185,7 +185,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         hashMap.put("postID", postID);
         hashMap.put("isPost", true);
 
-        FirebaseDatabase.getInstance().getReference().child("Notification").child(user.getUid()).push().setValue(hashMap);
+        FirebaseDatabase.getInstance().getReference().child("Notifications").child(user.getUid()).push().setValue(hashMap);
     }
 
     @Override
@@ -277,12 +277,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     }
 
     //checks if the post is already saved or not
-    private void isSaved(String postID, final ImageView saveIcon){
-        FirebaseDatabase.getInstance().getReference().child("Saved").child(postID).addValueEventListener(new ValueEventListener() {
+    private void isSaved(final String postID, final ImageView saveIcon){
+        FirebaseDatabase.getInstance().getReference().child("Saved").child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //if Uid exists inside Likes -> PostID
-                if (snapshot.child(user.getUid()).exists()){
+                //if Uid exists inside Saved -> PostID
+                if (snapshot.child(postID).exists()){
                     saveIcon.setImageResource(R.drawable.ic_saved);
                     saveIcon.setTag("saved");
                 } else {

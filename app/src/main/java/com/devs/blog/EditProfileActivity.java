@@ -115,6 +115,7 @@ public class EditProfileActivity extends AppCompatActivity {
         map.put("username", username.getText().toString());
 
         reference.child("Users").child(user.getUid()).updateChildren(map);
+        Toast.makeText(this, "Profile Updated!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
