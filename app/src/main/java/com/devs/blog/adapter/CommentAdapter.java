@@ -69,7 +69,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 if (user.getImageurl().equals("default")){
                     holder.profileImage.setImageResource(R.drawable.logo);
                 }else {
-                    Glide.with(context).load(user.getImageurl()).into(holder.profileImage);
+                    Glide.with(context).load(user.getImageurl()).into(holder.profileImage).centerCrop().placeholder(R.drawable.loading_spinner);
                 }
             }
 

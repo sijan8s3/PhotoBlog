@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth= FirebaseAuth.getInstance();
 
         if(firebaseAuth.getCurrentUser() != null){
-            startActivity(new Intent(MainActivity.this, BrowseActivity.class));
+            startActivity(new Intent(MainActivity.this, BrowseActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
             finish();
         }
 
